@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import LeagueTable from './components/LeagueTable'
+import LeagueTable from './components/LeagueTable';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 class App extends Component {
   render() {
@@ -11,7 +14,9 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to foot-stat-react</h1>
         </header>
-        <LeagueTable/>
+        <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+          <LeagueTable/>
+        </MuiThemeProvider>
       </div>
     );
   }
