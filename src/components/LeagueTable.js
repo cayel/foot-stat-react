@@ -1,35 +1,19 @@
 import React from 'react';
 
 import axios from 'axios';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
-
-const styleTable = {
-  width: 200,
-}
-
-const style = {
-  height: 100,
-  width: 800,
-  margin: 20,
-  textAlign: 'center',
-  display: 'inline-block',
-};
 
 export default class LeagueTable extends React.Component {
   state = {
-    leagueTable: []
+    leagueTable: [],
+    league : '',
+  }
+  
+  urlDataLeague(league) {
+    return `https://api.football-data.org/v1/competitions/`+league+`/leagueTable`;
   }
 
-  componentDidMount() {
-    axios.get(`https://api.football-data.org/v1/competitions/450/leagueTable`, {
+  loadLeagueTable() {
+    axios.get(this.urlDataLeague(this.props.league), {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -38,51 +22,50 @@ export default class LeagueTable extends React.Component {
     })
       .then(res => {
         const leagueTable = res.data.standing;
-        this.setState({ leagueTable });
-      })
+        this.setState({ leagueTable : leagueTable, league : this.props.league });
+    })
+  }
+
+  componentDidMount() {    
+    this.loadLeagueTable();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.league !== this.props.league) this.loadLeagueTable();
   }
 
   render() {
     return (
-<div>
-  <Paper style={style} zDepth={1}>
-      <Table
-        selectable={false}>
-        <TableHeader
-        displaySelectAll={false}
-        adjustForCheckbox={false}>
-        <TableRow>
-          <TableHeaderColumn>Rang</TableHeaderColumn>
-          <TableHeaderColumn style={styleTable} >Equipe</TableHeaderColumn>
-          <TableHeaderColumn>Matchs</TableHeaderColumn>
-          <TableHeaderColumn>Points</TableHeaderColumn>
-          <TableHeaderColumn>Gagnés</TableHeaderColumn>
-          <TableHeaderColumn>Nuls</TableHeaderColumn>
-          <TableHeaderColumn>Perdus</TableHeaderColumn>
-          <TableHeaderColumn>Bp</TableHeaderColumn>
-          <TableHeaderColumn>Bc</TableHeaderColumn>          
-          <TableHeaderColumn>Diff</TableHeaderColumn>          
-        </TableRow>
-        </TableHeader>
-        <TableBody
-        displayRowCheckbox={false}
-          showRowHover={true}>
-        {this.state.leagueTable.map(lt => <TableRow key={lt.position}> 
-          <TableRowColumn>{lt.position}</TableRowColumn>
-          <TableRowColumn style={styleTable}>{lt.teamName}</TableRowColumn>
-          <TableRowColumn>{lt.playedGames}</TableRowColumn>
-          <TableRowColumn>{lt.points}</TableRowColumn>
-          <TableRowColumn>{lt.wins}</TableRowColumn>
-          <TableRowColumn>{lt.draws}</TableRowColumn>
-          <TableRowColumn>{lt.losses}</TableRowColumn>
-          <TableRowColumn>{lt.goals}</TableRowColumn>
-          <TableRowColumn>{lt.goalsAgainst}</TableRowColumn>
-          <TableRowColumn>{lt.goalDifference}</TableRowColumn>          
-          </TableRow>)}
-          </TableBody>
-          </Table>
-          </Paper>
-</div>          
+      <table>
+        <thead>
+        <tr>
+          <th>Rang</th>
+          <th>Equipe</th>
+          <th>Matchs</th>
+          <th>Points</th>
+          <th>Gagnés</th>
+          <th>Nuls</th>
+          <th>Perdus</th>
+          <th>Bp</th>
+          <th>Bc</th>          
+          <th>Diff</th>          
+        </tr>
+        </thead>
+        <tbody>
+        {this.state.leagueTable.map(lt => <tr key={lt.position}> 
+          <td>{lt.position}</td>
+          <td>{lt.teamName}</td>
+          <td>{lt.playedGames}</td>
+          <td>{lt.points}</td>
+          <td>{lt.wins}</td>
+          <td>{lt.draws}</td>
+          <td>{lt.losses}</td>
+          <td>{lt.goals}</td>
+          <td>{lt.goalsAgainst}</td>
+          <td>{lt.goalDifference}</td>          
+          </tr>)}
+          </tbody>
+          </table>
         )
       }
   }

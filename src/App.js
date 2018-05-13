@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import LeagueTable from './components/LeagueTable';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import LeagueTable from './components/LeagueTable'
+import SelectLeague from './components/SelectLeague'
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {selectedLeague: '450'};
+  }
+
+  saveChange = (field) => (newValue) => {
+    // do something with this field's newValue
+    // newValue is whatever is typed into input
+    this.setState({selectedLeague: newValue});
+  }
+
   render() {
     return (
       <div className="App">
@@ -14,9 +23,8 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to foot-stat-react</h1>
         </header>
-        <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-          <LeagueTable/>
-        </MuiThemeProvider>
+        <SelectLeague updateParent={this.saveChange("league")}/>
+        <LeagueTable league={this.state.selectedLeague}/>
       </div>
     );
   }
